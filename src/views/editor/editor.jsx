@@ -1,53 +1,79 @@
 var React = require('react');
-var ReactTHREE = require('react-three');
-var {
-  Scene, 
-  PerspectiveCamera,
-  Line
-} = ReactTHREE;
 var THREE = require('three');
+var OrbitControls = require('three-orbit-controls')(THREE);
 
 var Editor = React.createClass({
+  getInitialState: function() {
+    return {
+      scene: null,
+      renderer: null,
+      camera: null,
+      stoped: false
+    }
+  },
   getDefaultProps: function() {
     return {
-      width: 300,
-      height: 300
+      width: 800,
+      height: 600
     };
   },
   componentDidMount: function() {
-    //
+    var self = this;
+
+    // fetch the element to render
+    var renderElement = React.findDOMNode(this.refs.renderElement);
+    // create renderer
+    var renderer = new THREE.WebGLRenderer({
+      canvas: renderElement,
+      antialias: false
+    });
+    renderer.setSize(+this.props.width, +this.props.height);
+
+    // create a scene
+    var scene = new THREE.Scene();
+
+    // set a camera
+    var camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
+    camera.position.z = 5;
+    scene.add(camera);
+
+    // mouse controller
+    var controls = new OrbitControls(camera);
+
+    // sample object
+    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    var cube = new THREE.Mesh( geometry, material );
+    scene.add(cube);
+
+    self.setState({
+      renderer: renderer,
+      scene: scene,
+      camera: camera,
+    }, self.renderCanvas);
+  },
+  componentWillUnmount: function() {
+    this.setState({
+      stoped: true
+    });
   },
   render: function() {
-    var aspectratio = this.props.width / this.props.height;
-    var cameraprops = {
-      fov: 75, 
-      aspect: aspectratio, 
-      near: 1, 
-      far: 5000,
-      position: new THREE.Vector3(0,0,600), 
-      lookat: new THREE.Vector3(0,0,0)
-    };
-
-    var material = new THREE.LineBasicMaterial({
-      color: 0x0000ff
-    });
-
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push(
-      new THREE.Vector3( -10, 0, 0 ),
-      new THREE.Vector3( 0, 10, 0 ),
-      new THREE.Vector3( 10, 0, 0 )
-    );
-
     return (
-      <Scene 
-        width={this.props.width}
-        height={this.props.height} 
-        camera="maincamera">
-          <PerspectiveCamera name="maincamera" {...cameraprops} />
-              <Line geometry={geometry} material={material}/>
-      </Scene>
+      <div>
+        <canvas
+          ref="renderElement"
+          width={this.props.width}
+          height={this.props.height} />
+      </div>
     );
+  },
+  renderCanvas: function() {
+    var self = this;
+    if (self.state.stoped) {
+      return;
+    }
+    requestAnimationFrame(self.renderCanvas);
+    self.state.renderer.render(self.state.scene, self.state.camera);
   }
 });
 
