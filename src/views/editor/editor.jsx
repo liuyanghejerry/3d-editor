@@ -48,10 +48,6 @@ var Editor = React.createClass({
     // mouse controller
     var controls = new OrbitControls(camera);
 
-    // sample object
-    var cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
-    scene.add(cube);
-
     self.setState({
       renderer: renderer,
       scene: scene,
