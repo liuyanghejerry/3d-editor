@@ -5,7 +5,8 @@ var THREE = require('three');
 var Cube = Backbone.Model.extend({
   _object: null,
   defaults: {
-    name: 'anonymous'
+    name: 'anonymous',
+    color: 0x00ff00
   },
   initialize: function(attrs) {
     console.log('Cube initialize with:', attrs);
@@ -16,6 +17,7 @@ var Cube = Backbone.Model.extend({
       object.position.x = attrs.position.x;
       object.position.y = attrs.position.y;
       object.position.z = attrs.position.z;
+      object.material.color = new THREE.Color(attrs.color);
 
       attrs.object = object;
       this._object = object;
@@ -34,6 +36,7 @@ var Cube = Backbone.Model.extend({
   },
   setColor: function(color) {
     this.getObject().material.color = new THREE.Color(color);
+    this.set('color', color);
     this.save();
   },
   getColor: function() {
@@ -60,6 +63,7 @@ var Cube = Backbone.Model.extend({
     object.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
 
     return new Cube({
+      color: material.color.getHex(),
       position: object.position,
       object: object,
     });
