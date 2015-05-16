@@ -123,6 +123,9 @@ var Stage = Backbone.Model.extend({
   _hookEvents: function() {
     var self = this;
     eventBox.on('color:updated', self._updateColor.bind(self));
+    eventBox.on('pos:x:updated', self._updatePosX.bind(self));
+    eventBox.on('pos:y:updated', self._updatePosY.bind(self));
+    eventBox.on('pos:z:updated', self._updatePosZ.bind(self));
   },
   _updateColor: function(color) {
     var selectedCube = this.get('selectedCube');
@@ -133,6 +136,45 @@ var Stage = Backbone.Model.extend({
 
     selectedCube.setColor(color);
     console.log(selectedCube.getColor());
+  },
+  _updatePosX: function(x) {
+    var selectedCube = this.get('selectedCube');
+    console.log('_hookEvents', 'pos:x:updated', selectedCube);
+    if (!selectedCube) {
+      return;
+    }
+
+    var lastPos = selectedCube.getPos();
+    var y = lastPos.y;
+    var z = lastPos.z;
+
+    selectedCube.setPos(x, y, z);
+  },
+  _updatePosY: function(y) {
+    var selectedCube = this.get('selectedCube');
+    console.log('_hookEvents', 'pos:y:updated', selectedCube);
+    if (!selectedCube) {
+      return;
+    }
+
+    var lastPos = selectedCube.getPos();
+    var x = lastPos.x;
+    var z = lastPos.z;
+
+    selectedCube.setPos(x, y, z);
+  },
+  _updatePosZ: function(z) {
+    var selectedCube = this.get('selectedCube');
+    console.log('_hookEvents', 'pos:z:updated', selectedCube);
+    if (!selectedCube) {
+      return;
+    }
+
+    var lastPos = selectedCube.getPos();
+    var y = lastPos.y;
+    var x = lastPos.x;
+
+    selectedCube.setPos(x, y, z);
   },
   _locateMouseTarget: function(evt) {
     var renderer = this.get('renderer');

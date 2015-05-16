@@ -32,6 +32,7 @@ var Cube = Backbone.Model.extend({
     pos.x = x;
     pos.y = y;
     pos.z = z;
+    this.set('position', pos);
     this.save();
   },
   parse: function(attrs) {
