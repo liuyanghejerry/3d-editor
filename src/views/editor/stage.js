@@ -1,12 +1,14 @@
 var React = require('react');
 var THREE = require('three');
-var OrbitControls = require('three-orbit-controls')(THREE);
+var OrbitControls = require('./orbit_controls.js')(THREE);
 
 var BackBone = require('backbone');
 Backbone.LocalStorage = require("backbone.localstorage");
 
 var Cube = require('./cube.js').Cube;
 var CubeCollection = require('./cube.js').CubeCollection;
+
+var eventBox = require('./eventbox.js');
 
 var Stage = Backbone.Model.extend({
   initialize: function(renderElement, width, height) {
@@ -15,7 +17,9 @@ var Stage = Backbone.Model.extend({
     var cubes = new CubeCollection();
     this.set('cubes', cubes);
     this.set('stoped', true);
+    this.set('selectedCube', null);
     this._initCanvas(renderElement, width, height);
+    this._hookEvents();
 
     cubes.fetch({
       success: function(model, response, options) {
@@ -24,9 +28,6 @@ var Stage = Backbone.Model.extend({
         });
       }
     });
-  },
-  _recover: function() {
-    var cubes = this.get('cubes');
   },
   _initCanvas: function(renderElement, width, height) {
     var self = this;
@@ -48,7 +49,7 @@ var Stage = Backbone.Model.extend({
     scene.add(camera);
 
     // mouse controller
-    var controls = new OrbitControls(camera);
+    var controls = new OrbitControls(camera, renderElement);
 
     this.set('renderer', renderer);
     this.set('scene', scene);
@@ -119,7 +120,21 @@ var Stage = Backbone.Model.extend({
     this.set('mouseVector', mouseVector);
     this.set('plane', plane);
   },
-  handleMouseDbCliked: function(evt) {
+  _hookEvents: function() {
+    var self = this;
+    eventBox.on('color:updated', self._updateColor.bind(self));
+  },
+  _updateColor: function(color) {
+    var selectedCube = this.get('selectedCube');
+    console.log('_hookEvents', 'color:updated', selectedCube);
+    if (!selectedCube) {
+      return;
+    }
+
+    selectedCube.setColor(color);
+    console.log(selectedCube.getColor());
+  },
+  _locateMouseTarget: function(evt) {
     var renderer = this.get('renderer');
     var raycaster = this.get('raycaster');
     var scene = this.get('scene');
@@ -139,6 +154,13 @@ var Stage = Backbone.Model.extend({
     var intersects = raycaster.intersectObjects( objects );
 
     console.log('mouse intersects', intersects);
+    return intersects;
+  },
+  handleMouseDbCliked: function(evt) {
+    var objects = this.get('objects');
+    var plane = this.get('plane');
+    var cubes = this.get('cubes');
+    var intersects = this._locateMouseTarget(evt);
 
     if (intersects.length <= 0) {
       return;
@@ -146,12 +168,35 @@ var Stage = Backbone.Model.extend({
 
     var intersect = intersects[0];
 
-    if ( intersect.object !== plane ) {
-      // we clicked on an normal object
-    } else {
+    if ( intersect.object === plane ) {
       // its the plane, we place one more normal object
       var cube = Cube.createWithIntersect(intersect.point, intersect.face.normal);
       this.addCube(cube);
+    }
+  },
+  handleMouseCliked: function(evt) {
+    var objects = this.get('objects');
+    var plane = this.get('plane');
+    var cubes = this.get('cubes');
+    var intersects = this._locateMouseTarget(evt);
+
+    if (intersects.length <= 0) {
+      return;
+    }
+
+    for (var i = 0; i < intersects.length; i++) {
+      if ( intersects[i].object !== plane ) {
+        // we clicked on an normal object
+        var cube = cubes.findCubeByObject(intersects[i].object);
+        if (!cube) {
+          console.error('cannot find cube when selected');
+          return;
+        }
+        this.set('selectedCube', cube);
+        console.log('cube selected', cube);
+        eventBox.emit('target:updated', cube);
+        break;
+      }
     }
   },
   startRender: function() {
@@ -173,7 +218,7 @@ var Stage = Backbone.Model.extend({
     this._addCube(cube);
     var cubes = this.get('cubes');
     cubes.push(cube);
-    cube.save();
+    cube.setColor(0xff0000);
   },
   _addCube: function(cube) {
     var scene = this.get('scene');

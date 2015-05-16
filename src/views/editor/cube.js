@@ -5,16 +5,34 @@ var THREE = require('three');
 var Cube = Backbone.Model.extend({
   initialize: function(attrs) {
     console.log('Cube initialize with:', attrs);
-    this.setName(attrs.name || 'anonymous');
+    this.set('name', attrs.name || 'anonymous');
   },
   setName: function(name) {
     this.set('name', name);
+    this.save();
   },
   getName: function() {
     return this.get('name');
   },
   getObject: function() {
     return this.get('object');
+  },
+  setColor: function(color) {
+    this.get('object').material.color = new THREE.Color(color);
+    this.save();
+  },
+  getColor: function() {
+    return this.get('object').material.color.getHex();
+  },
+  getPos: function() {
+    return this.get('object').position;
+  },
+  setPos: function(x, y, z) {
+    var pos = this.get('object').position;
+    pos.x = x;
+    pos.y = y;
+    pos.z = z;
+    this.save();
   },
   parse: function(attrs) {
     var loader = new THREE.ObjectLoader();
@@ -45,6 +63,11 @@ var Cube = Backbone.Model.extend({
 var CubeCollection = Backbone.Collection.extend({
   model: Cube,
   localStorage: new Backbone.LocalStorage('CubeCollection'),
+  findCubeByObject: function(obj) {
+    return this.find(function(cube) {
+      return cube.get('object').uuid === obj.uuid;
+    });
+  }
 });
 
 module.exports = {

@@ -1,5 +1,6 @@
-var React = require('react/addons');
+var React = require('react');
 var Stage = require('./stage.js');
+var Panel = require('./panel.jsx');
 
 var Editor = React.createClass({
   getInitialState: function() {
@@ -27,8 +28,11 @@ var Editor = React.createClass({
       stage.startRender();
     });
   },
-  handleMouseClicked: function(evt) {
+  handleMouseDbClicked: function(evt) {
     this.state.stage.handleMouseDbCliked(evt);
+  },
+  handleMouseClicked: function(evt) {
+    this.state.stage.handleMouseCliked(evt);
   },
   componentDidMount: function() {
     this.initCanvas();
@@ -41,9 +45,11 @@ var Editor = React.createClass({
       <div>
         <canvas
           ref="renderElement"
-          onDoubleClick={this.handleMouseClicked}
+          onDoubleClick={this.handleMouseDbClicked}
+          onClick={this.handleMouseClicked}
           width={this.props.width}
           height={this.props.height} />
+        <Panel />
       </div>
     );
   }
