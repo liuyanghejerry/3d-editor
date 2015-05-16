@@ -3,22 +3,34 @@ var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
 
 var BackBone = require('backbone');
-var THREE = require('three');
+Backbone.LocalStorage = require("backbone.localstorage");
 
 var Cube = require('./cube.js').Cube;
 var CubeCollection = require('./cube.js').CubeCollection;
 
 var Stage = Backbone.Model.extend({
   initialize: function(renderElement, width, height) {
+    var self = this;
     this.set('objects', []);
-    this.set('cubes', new CubeCollection());
+    var cubes = new CubeCollection();
+    this.set('cubes', cubes);
     this.set('stoped', true);
     this._initCanvas(renderElement, width, height);
+
+    cubes.fetch({
+      success: function(model, response, options) {
+        cubes.forEach(function(cube) {
+          self._addCube(cube);
+        });
+      }
+    });
+  },
+  _recover: function() {
+    var cubes = this.get('cubes');
   },
   _initCanvas: function(renderElement, width, height) {
     var self = this;
     // create renderer
-    console.log(renderElement)
     var renderer = new THREE.WebGLRenderer({
       canvas: renderElement,
       antialias: true
@@ -126,7 +138,7 @@ var Stage = Backbone.Model.extend({
 
     var intersects = raycaster.intersectObjects( objects );
 
-    console.log(intersects);
+    console.log('mouse intersects', intersects);
 
     if (intersects.length <= 0) {
       return;
@@ -138,7 +150,7 @@ var Stage = Backbone.Model.extend({
       // we clicked on an normal object
     } else {
       // its the plane, we place one more normal object
-      var cube = new Cube(intersect.point, intersect.face.normal);
+      var cube = Cube.createWithIntersect(intersect.point, intersect.face.normal);
       this.addCube(cube);
     }
   },
@@ -158,13 +170,19 @@ var Stage = Backbone.Model.extend({
     self.get('renderer').render(self.get('scene'), self.get('camera'));
   },
   addCube: function(cube) {
+    this._addCube(cube);
+    var cubes = this.get('cubes');
+    cubes.push(cube);
+    cube.save();
+  },
+  _addCube: function(cube) {
     var scene = this.get('scene');
     var objects = this.get('objects');
-    var cubes = this.get('cubes');
-    
+
     scene.add(cube.getObject());
-    cubes.push(cube);
     objects.push(cube.getObject());
+
+    console.log('cube is added to scene:', cube);
   }
 });
 
