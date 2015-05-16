@@ -3,9 +3,24 @@ Backbone.LocalStorage = require('backbone.localstorage');
 var THREE = require('three');
 
 var Cube = Backbone.Model.extend({
+  _object: null,
+  defaults: {
+    name: 'anonymous'
+  },
   initialize: function(attrs) {
     console.log('Cube initialize with:', attrs);
-    this.set('name', attrs.name || 'anonymous');
+
+    if (!(attrs.object instanceof THREE.Mesh)) {
+      var loader = new THREE.ObjectLoader();
+      var object = loader.parse(attrs.object);
+      object.position.x = attrs.position.x;
+      object.position.y = attrs.position.y;
+      object.position.z = attrs.position.z;
+
+      attrs.object = object;
+      this._object = object;
+    } 
+    this._object = attrs.object;
   },
   setName: function(name) {
     this.set('name', name);
@@ -15,35 +30,25 @@ var Cube = Backbone.Model.extend({
     return this.get('name');
   },
   getObject: function() {
-    return this.get('object');
+    return this._object;
   },
   setColor: function(color) {
-    this.get('object').material.color = new THREE.Color(color);
+    this.getObject().material.color = new THREE.Color(color);
     this.save();
   },
   getColor: function() {
-    return this.get('object').material.color.getHex();
+    return this.getObject().material.color.getHex();
   },
   getPos: function() {
-    return this.get('object').position;
+    return this.getObject().position;
   },
   setPos: function(x, y, z) {
-    var pos = this.get('object').position;
+    var pos = this.getObject().position;
     pos.x = x;
     pos.y = y;
     pos.z = z;
     this.set('position', pos);
     this.save();
-  },
-  parse: function(attrs) {
-    var loader = new THREE.ObjectLoader();
-    var object = loader.parse(attrs.object);
-    object.position.x = attrs.position.x;
-    object.position.y = attrs.position.y;
-    object.position.z = attrs.position.z;
-
-    attrs.object = object;
-    return attrs;
   }
 }, {
   createWithIntersect: function(intersectPoint, intersectFace) {
@@ -66,7 +71,7 @@ var CubeCollection = Backbone.Collection.extend({
   localStorage: new Backbone.LocalStorage('CubeCollection'),
   findCubeByObject: function(obj) {
     return this.find(function(cube) {
-      return cube.get('object').uuid === obj.uuid;
+      return cube.getObject().uuid === obj.uuid;
     });
   }
 });

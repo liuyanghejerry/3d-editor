@@ -5,6 +5,7 @@
   "dependencies": {
     "autoprefixer-loader": "^1.1.0",
     "backbone": "^1.2.0",
+    "backbone.localstorage": "^1.1.16",
     "css-loader": "^0.9.0",
     "file-loader": "^0.8.1",
     "gulp": "^3.8.11",
@@ -25,7 +26,6 @@
     "sass-loader": "^0.4.0-beta.1",
     "style-loader": "^0.8.1",
     "three": "^0.70.1",
-    "three-orbit-controls": "^69.0.4",
     "url-loader": "^0.5.5",
     "vinyl": "0.4.6",
     "webpack": "^1.5.3",
