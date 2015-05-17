@@ -13,6 +13,7 @@ var Cube = Backbone.Model.extend({
     if (attrs && attrs.object) {
       var loader = new THREE.ObjectLoader();
       var object = loader.parse(attrs.object);
+      object.matrixAutoUpdate = true;
 
       this._object = object;
       this.set('object', object);
@@ -30,7 +31,7 @@ var Cube = Backbone.Model.extend({
   },
   setColor: function(color) {
     this.getObject().material.color = new THREE.Color(color);
-    this.set('object', this._object);
+    this.set('object', this.getObject());
     this.save();
   },
   getColor: function() {
@@ -44,7 +45,9 @@ var Cube = Backbone.Model.extend({
     pos.x = x;
     pos.y = y;
     pos.z = z;
-    this.set('object', this._object);
+    this.getObject().updateMatrix();
+
+    this.set('object', this.getObject());
     this.save();
   }
 }, {

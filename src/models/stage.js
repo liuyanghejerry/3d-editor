@@ -304,6 +304,10 @@ var Stage = Backbone.Model.extend({
     objects.push(cube.getObject());
 
     console.log('cube is added to scene:', cube);
+    eventBox.emit('cubes:updated');
+  },
+  getCubes: function() {
+    return this.get('cubes');
   }
 });
 
