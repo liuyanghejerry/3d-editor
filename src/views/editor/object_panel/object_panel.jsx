@@ -10,14 +10,6 @@ var MUI = require('material-ui');
 var {Menu} = MUI;
 var eventBox = require('../../../misc/eventbox.js');
 
-function sendEvent(name, value) {
-  setTimeout(eventBox.emit.bind(eventBox, name, value), 0);
-}
-
-function sendEventFunc(name, value) {
-  return sendEvent.bind(null, name, value);
-}
-
 var ObjectPanel = React.createClass({
   getInitialState: function() {
     return {

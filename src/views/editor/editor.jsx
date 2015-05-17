@@ -5,8 +5,6 @@ var Stage = require('../../models/stage.js');
 var PropertyPanel = require('./property_panel/property_panel.jsx');
 var ObjectPanel = require('./object_panel/object_panel.jsx');
 
-var eventBox = require('../../misc/eventbox.js');
-
 var Editor = React.createClass({
   getInitialState: function() {
     return {

@@ -10,14 +10,6 @@ var MUI = require('material-ui');
 var {TextField} = MUI;
 var eventBox = require('../../../misc/eventbox.js');
 
-function sendEvent(name, value) {
-  setTimeout(eventBox.emit.bind(eventBox, name, value), 0);
-}
-
-function sendEventFunc(name, value) {
-  return sendEvent.bind(null, name, value);
-}
-
 var PropertyPanel = React.createClass({
   getInitialState: function() {
     return {
@@ -61,27 +53,27 @@ var PropertyPanel = React.createClass({
     var color = parseInt(evt.target.value, 16);
     this.setState({
       color: evt.target.value
-    }, sendEventFunc('color:updated', color));
+    }, eventBox.sendEventFunc('color:updated', color));
   },
   handlePosXChange: function(evt) {
     this.setState({
       x: parseInt(evt.target.value, 10)
-    }, sendEventFunc('pos:x:updated', parseInt(evt.target.value, 10)));
+    }, eventBox.sendEventFunc('pos:x:updated', parseInt(evt.target.value, 10)));
   },
   handlePosYChange: function(evt) {
     this.setState({
       y: parseInt(evt.target.value, 10)
-    }, sendEventFunc('pos:y:updated', parseInt(evt.target.value, 10)));
+    }, eventBox.sendEventFunc('pos:y:updated', parseInt(evt.target.value, 10)));
   },
   handlePosZChange: function(evt) {
     this.setState({
       z: parseInt(evt.target.value, 10)
-    }, sendEventFunc('pos:z:updated', parseInt(evt.target.value, 10)));
+    }, eventBox.sendEventFunc('pos:z:updated', parseInt(evt.target.value, 10)));
   },
   handleNameChange: function(evt) {
     this.setState({
       name: evt.target.value,
-    }, sendEventFunc('name:updated', evt.target.value));
+    }, eventBox.sendEventFunc('name:updated', evt.target.value));
   },
   render: function() {
     return (
