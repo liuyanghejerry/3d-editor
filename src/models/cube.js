@@ -13,7 +13,6 @@ var Cube = Backbone.Model.extend({
     if (attrs && attrs.object) {
       var loader = new THREE.ObjectLoader();
       var object = loader.parse(attrs.object);
-      object.matrixAutoUpdate = true;
 
       this._object = object;
       this.set('object', object);
@@ -55,9 +54,9 @@ var Cube = Backbone.Model.extend({
     var geometry = new THREE.BoxGeometry( 50, 50, 50 );
     var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     var object = new THREE.Mesh(geometry, material);
-    object.matrixAutoUpdate = true;
     object.position.copy(intersectPoint).add(intersectFace);
     object.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+    object.updateMatrix();
 
     var cube = new Cube();
 

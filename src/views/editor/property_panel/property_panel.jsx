@@ -85,7 +85,7 @@ var PropertyPanel = React.createClass({
   },
   render: function() {
     return (
-      <div className="panel">
+      <div className="property-panel">
         <div>
           <TextField
             floatingLabelText="Name"

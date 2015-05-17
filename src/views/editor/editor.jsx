@@ -41,7 +41,6 @@ var Editor = React.createClass({
   },
   componentDidMount: function() {
     this.initCanvas();
-    eventBox.on('cubes:updated', this.render.bind(this));
   },
   componentWillUnmount: function() {
     this.state.stage.stopRender();
@@ -59,6 +58,7 @@ var Editor = React.createClass({
             onClick={this.handleMouseClicked}
             width={this.props.width}
             height={this.props.height} />
+          <p className="note">Note: Click to select cube; double click to add new cube; All changes are persistent and WYSIWYG.</p>
         </Paper>
         <Paper zDepth={1} className="panel-zone">
           <PropertyPanel />

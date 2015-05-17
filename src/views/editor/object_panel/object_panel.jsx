@@ -25,7 +25,12 @@ var ObjectPanel = React.createClass({
     }
   },
   componentDidMount: function() {
-    // eventBox.on('target:updated', this.handleTargetUpdated);
+    var self = this;
+    eventBox.on('cubes:updated', function(cubes) {
+      self.setState({
+        cubes: cubes
+      });
+    });
   },
   componentWillUnmount: function() {
   },
@@ -37,7 +42,7 @@ var ObjectPanel = React.createClass({
   renderList: function(items) {
     return items.map(function(item) {
       return (
-        <li>{item.text}</li>
+        <li key={item.key}>{item.text}</li>
       );
     });
   },
@@ -45,13 +50,15 @@ var ObjectPanel = React.createClass({
     var menuItems = this.state.cubes.map(function(cube, index) {
       return {
         payload: index.toString(),
+        key: cube.getObject().uuid,
         text: cube.getName()
       };
     });
 
     return (
-      <div className="panel">
-        <ul>{this.renderList(menuItems)}</ul>
+      <div className="object-panel">
+        <h2>Cubes:</h2>
+        <ul className="object-list">{this.renderList(menuItems)}</ul>
       </div>
     );
   }

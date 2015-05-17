@@ -11,6 +11,13 @@ var CubeCollection = require('./cube.js').CubeCollection;
 
 var eventBox = require('../misc/eventbox.js');
 
+function sendEvent(name, value) {
+  setTimeout(eventBox.emit.bind(eventBox, name, value), 0);
+}
+
+function sendEventFunc(name, value) {
+  return sendEvent.bind(null, name, value);
+}
 var Stage = Backbone.Model.extend({
   initialize: function(renderElement, width, height) {
     var self = this;
@@ -186,6 +193,7 @@ var Stage = Backbone.Model.extend({
     }
 
     selectedCube.setName(name);
+    sendEvent('cubes:updated', this.get('cubes'));
   },
   _locateMouseTarget: function(evt) {
     var renderer = this.get('renderer');
@@ -304,7 +312,7 @@ var Stage = Backbone.Model.extend({
     objects.push(cube.getObject());
 
     console.log('cube is added to scene:', cube);
-    eventBox.emit('cubes:updated');
+    sendEvent('cubes:updated', this.get('cubes'));
   },
   getCubes: function() {
     return this.get('cubes');
