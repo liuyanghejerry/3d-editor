@@ -126,6 +126,7 @@ var Stage = Backbone.Model.extend({
     eventBox.on('pos:x:updated', self._updatePosX.bind(self));
     eventBox.on('pos:y:updated', self._updatePosY.bind(self));
     eventBox.on('pos:z:updated', self._updatePosZ.bind(self));
+    eventBox.on('name:updated', self._updateName.bind(self));
   },
   _updateColor: function(color) {
     var selectedCube = this.get('selectedCube');
@@ -176,6 +177,15 @@ var Stage = Backbone.Model.extend({
 
     selectedCube.setPos(x, y, z);
   },
+  _updateName: function(name) {
+    var selectedCube = this.get('selectedCube');
+    console.log('_hookEvents', 'name:updated', selectedCube);
+    if (!selectedCube) {
+      return;
+    }
+
+    selectedCube.setName(name);
+  },
   _locateMouseTarget: function(evt) {
     var renderer = this.get('renderer');
     var raycaster = this.get('raycaster');
@@ -214,6 +224,7 @@ var Stage = Backbone.Model.extend({
       // its the plane, we place one more normal object
       var cube = Cube.createWithIntersect(intersect.point, intersect.face.normal);
       this.addCube(cube);
+      this.selectCube(cube);
     }
   },
   handleMouseCliked: function(evt) {
@@ -234,12 +245,15 @@ var Stage = Backbone.Model.extend({
           console.error('cannot find cube when selected');
           return;
         }
-        this.set('selectedCube', cube);
-        console.log('cube selected', cube);
-        eventBox.emit('target:updated', cube);
+        this.selectCube(cube);
         break;
       }
     }
+  },
+  selectCube: function(cube) {
+    this.set('selectedCube', cube);
+    console.log('cube selected', cube);
+    eventBox.emit('target:updated', cube);
   },
   startRender: function() {
     this.set('stoped', false);

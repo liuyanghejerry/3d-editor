@@ -69,8 +69,8 @@ var Panel = React.createClass({
   },
   handleNameChange: function(evt) {
     this.setState({
-      name: parseInt(evt.target.value, 10)
-    }, sendEventFunc('name:updated', parseInt(evt.target.value, 10)));
+      name: evt.target.value,
+    }, sendEventFunc('name:updated', evt.target.value));
   },
   render: function() {
     return (

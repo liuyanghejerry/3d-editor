@@ -6,18 +6,13 @@ var Cube = Backbone.Model.extend({
   _object: null,
   defaults: {
     name: 'anonymous',
-    color: 0x00ff00
   },
   initialize: function(attrs) {
     console.log('Cube initialize with:', attrs);
 
-    if (attrs.object) {
+    if (attrs && attrs.object) {
       var loader = new THREE.ObjectLoader();
       var object = loader.parse(attrs.object);
-      object.position.x = attrs.position.x;
-      object.position.y = attrs.position.y;
-      object.position.z = attrs.position.z;
-      object.material.color = new THREE.Color(attrs.color);
 
       this._object = object;
       this.set('object', object);
@@ -35,7 +30,7 @@ var Cube = Backbone.Model.extend({
   },
   setColor: function(color) {
     this.getObject().material.color = new THREE.Color(color);
-    this.set('color', color);
+    this.set('object', this._object);
     this.save();
   },
   getColor: function() {
@@ -49,7 +44,7 @@ var Cube = Backbone.Model.extend({
     pos.x = x;
     pos.y = y;
     pos.z = z;
-    this.set('position', pos);
+    this.set('object', this._object);
     this.save();
   }
 }, {
@@ -61,10 +56,7 @@ var Cube = Backbone.Model.extend({
     object.position.copy(intersectPoint).add(intersectFace);
     object.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
 
-    var cube = new Cube({
-      color: material.color.getHex(),
-      position: object.position,
-    });
+    var cube = new Cube();
 
     cube._object = object;
     cube.set('object', object);
