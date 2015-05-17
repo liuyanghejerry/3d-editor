@@ -24,9 +24,9 @@ var Panel = React.createClass({
       disabled: true,
       name: 'unknown',
       color: '',
-      x: 0,
-      y: 0,
-      z: 0
+      x: '',
+      y: '',
+      z: ''
     }
   },
   componentDidMount: function() {

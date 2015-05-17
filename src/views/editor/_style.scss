@@ -1,0 +1,20 @@
+.editor-view {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  .editor-zone {
+    min-width: 800px;
+    min-height: 600px;
+    margin: 10px;
+    flex-grow: 0;
+  }
+  .panel-zone {
+    margin: 10px;
+    .panel {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding: 10px;
+    }
+  }
+}

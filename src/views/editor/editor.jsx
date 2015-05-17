@@ -1,4 +1,6 @@
 var React = require('react');
+var MUI = require('material-ui');
+var {Paper} = MUI;
 var Stage = require('./stage.js');
 var Panel = require('./panel.jsx');
 
@@ -42,14 +44,18 @@ var Editor = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <canvas
-          ref="renderElement"
-          onDoubleClick={this.handleMouseDbClicked}
-          onClick={this.handleMouseClicked}
-          width={this.props.width}
-          height={this.props.height} />
-        <Panel />
+      <div className="editor-view">
+        <Paper zDepth={1} className="editor-zone">
+          <canvas
+            ref="renderElement"
+            onDoubleClick={this.handleMouseDbClicked}
+            onClick={this.handleMouseClicked}
+            width={this.props.width}
+            height={this.props.height} />
+        </Paper>
+        <Paper zDepth={1} className="panel-zone">
+          <Panel />
+        </Paper>
       </div>
     );
   }

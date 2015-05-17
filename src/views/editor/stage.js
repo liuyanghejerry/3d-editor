@@ -196,9 +196,28 @@ var Stage = Backbone.Model.extend({
     var cubes = this.get('cubes');
     var mouseVector = this.get('mouseVector');
 
+    function divPos(evt) {
+      var current = evt.currentTarget;
+      var x = current.offsetLeft;
+      var y = current.offsetTop;
+
+      var element = current.offsetParent;
+
+      while (element !== null) {
+        x = parseInt (x) + parseInt (element.offsetLeft);
+        y = parseInt (y) + parseInt (element.offsetTop);
+
+        element = element.offsetParent;
+      }
+
+      return [evt.clientX - x, evt.clientY - y];
+    }
+
+    var pos = divPos(evt);
+
     mouseVector.set(
-      ( evt.clientX / renderer.domElement.width ) * 2 - 1,
-      - ( evt.clientY / renderer.domElement.height ) * 2 + 1
+      ( pos[0] / renderer.domElement.width ) * 2 - 1,
+      - ( pos[1] / renderer.domElement.height ) * 2 + 1
     );
 
     raycaster.setFromCamera( mouseVector, camera );
