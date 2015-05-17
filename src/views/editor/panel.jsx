@@ -35,6 +35,17 @@ var Panel = React.createClass({
   componentWillUnmount: function() {
   },
   handleTargetUpdated: function(target) {
+    if (!target) {
+      this.setState({
+        disabled: true,
+        name: 'unknown',
+        color: '',
+        x: '',
+        y: '',
+        z: '',
+      });
+      return;
+    }
     var pos = target.getPos();
     this.setState({
       disabled: false,

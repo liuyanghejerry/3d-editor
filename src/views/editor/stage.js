@@ -1,6 +1,7 @@
 var React = require('react');
 var THREE = require('three');
 var OrbitControls = require('./orbit_controls.js')(THREE);
+var lodash = require('lodash');
 
 var BackBone = require('backbone');
 Backbone.LocalStorage = require("backbone.localstorage");
@@ -252,22 +253,22 @@ var Stage = Backbone.Model.extend({
     var cubes = this.get('cubes');
     var intersects = this._locateMouseTarget(evt);
 
-    if (intersects.length <= 0) {
+    var intersect = lodash.find(intersects, function(intersect) {
+      return intersect.object !== plane;
+    });
+
+    if (!intersect) {
+      this.selectCube(null);
       return;
     }
 
-    for (var i = 0; i < intersects.length; i++) {
-      if ( intersects[i].object !== plane ) {
-        // we clicked on an normal object
-        var cube = cubes.findCubeByObject(intersects[i].object);
-        if (!cube) {
-          console.error('cannot find cube when selected');
-          return;
-        }
-        this.selectCube(cube);
-        break;
-      }
+    var cube = cubes.findCubeByObject(intersect.object);
+    if (!cube) {
+      console.error('cannot find cube when selected');
+      return;
     }
+    this.selectCube(cube);
+
   },
   selectCube: function(cube) {
     this.set('selectedCube', cube);
