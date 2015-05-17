@@ -10,11 +10,7 @@
   }
   .panel-zone {
     margin: 10px;
-    .panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 10px;
-    }
   }
 }
+
+@import "./property_panel/style";

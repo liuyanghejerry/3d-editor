@@ -8,7 +8,7 @@ injectTapEventPlugin();
 
 var MUI = require('material-ui');
 var {TextField} = MUI;
-var eventBox = require('./eventbox.js');
+var eventBox = require('../../../misc/eventbox.js');
 
 function sendEvent(name, value) {
   setTimeout(eventBox.emit.bind(eventBox, name, value), 0);
@@ -18,7 +18,7 @@ function sendEventFunc(name, value) {
   return sendEvent.bind(null, name, value);
 }
 
-var Panel = React.createClass({
+var PropertyPanel = React.createClass({
   getInitialState: function() {
     return {
       disabled: true,
@@ -126,4 +126,4 @@ var Panel = React.createClass({
   }
 });
 
-module.exports = Panel;
+module.exports = PropertyPanel;

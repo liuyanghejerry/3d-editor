@@ -1,6 +1,6 @@
 var React = require('react');
 var THREE = require('three');
-var OrbitControls = require('./orbit_controls.js')(THREE);
+var OrbitControls = require('../misc/orbit_controls.js')(THREE);
 var lodash = require('lodash');
 
 var BackBone = require('backbone');
@@ -9,7 +9,7 @@ Backbone.LocalStorage = require("backbone.localstorage");
 var Cube = require('./cube.js').Cube;
 var CubeCollection = require('./cube.js').CubeCollection;
 
-var eventBox = require('./eventbox.js');
+var eventBox = require('../misc/eventbox.js');
 
 var Stage = Backbone.Model.extend({
   initialize: function(renderElement, width, height) {

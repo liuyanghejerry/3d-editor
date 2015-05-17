@@ -1,8 +1,8 @@
 var React = require('react');
 var MUI = require('material-ui');
 var {Paper} = MUI;
-var Stage = require('./stage.js');
-var Panel = require('./panel.jsx');
+var Stage = require('../../models/stage.js');
+var PropertyPanel = require('./property_panel/property_panel.jsx');
 
 var Editor = React.createClass({
   getInitialState: function() {
@@ -54,7 +54,7 @@ var Editor = React.createClass({
             height={this.props.height} />
         </Paper>
         <Paper zDepth={1} className="panel-zone">
-          <Panel />
+          <PropertyPanel />
         </Paper>
       </div>
     );
